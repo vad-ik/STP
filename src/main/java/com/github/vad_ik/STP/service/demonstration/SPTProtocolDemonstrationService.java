@@ -1,19 +1,16 @@
-package com.github.vad_ik.STP.logics;
+package com.github.vad_ik.STP.service.demonstration;
 
-import com.github.vad_ik.STP.graphics.MainStage;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import javafx.scene.layout.Pane;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MainModel {
-    MainStage stage;
-
-    public void activateSTP(Pane activeRegion){
+public class SPTProtocolDemonstrationService {
+    public void activateSTP(Pane activeRegion) {
         for (int i = 0; i < activeRegion.getChildren().size(); i++) {
             if ((activeRegion.getChildren().get(i)) instanceof ConnectionRouter) {
-                ((ConnectionRouter)activeRegion.getChildren().get(i)).activateAnimation(false);
-                ((ConnectionRouter)activeRegion.getChildren().get(i)).activateAnimation(true);
+                ((ConnectionRouter) activeRegion.getChildren().get(i)).activateAnimation(false);
+                ((ConnectionRouter) activeRegion.getChildren().get(i)).activateAnimation(true);
 
             }
         }
@@ -25,8 +22,8 @@ public class MainModel {
         }
         for (int i = 0; i < activeRegion.getChildren().size(); i++) {
             if ((activeRegion.getChildren().get(i)) instanceof ConnectionRouter) {
-                ((ConnectionRouter)activeRegion.getChildren().get(i)).offAnimation();
-                ((ConnectionRouter)activeRegion.getChildren().get(i)).offAnimation();
+                ((ConnectionRouter) activeRegion.getChildren().get(i)).offAnimation();
+                ((ConnectionRouter) activeRegion.getChildren().get(i)).offAnimation();
             }
         }
     }

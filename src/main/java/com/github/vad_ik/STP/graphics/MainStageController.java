@@ -1,10 +1,9 @@
 package com.github.vad_ik.STP.graphics;
 
+import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.Router;
 import com.github.vad_ik.STP.service.CalculateLocationService;
-import jakarta.annotation.PostConstruct;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -18,30 +17,23 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.github.vad_ik.STP.graphics.utils.WindowConstantHolder.*;
-
 @Service
-public class MainStage extends Application {
+public class MainStageController {
     private int phase = 1;
     private Router connect;
 
-    private CalculateLocationService calculateLocationService;
+    private final CalculateLocationService calculateLocationService;
+    private final WindowConstantHolder consts;
 
-    @PostConstruct
-    public void launch() {
-        Application.launch();
-    }
-
-    @PostConstruct
     @Autowired
-    public void init(CalculateLocationService calculateLocationService) {
+    public MainStageController(CalculateLocationService calculateLocationService, WindowConstantHolder windowConstantHolder) {
         this.calculateLocationService = calculateLocationService;
+        this.consts = windowConstantHolder;
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.show();
-        stage.setTitle("STP");
+        stage.setTitle(consts.TITLE);
         Pane activeRegion = new Pane(); // Контейнер для кругов
 
         // Обработчик клика мыши
@@ -57,14 +49,23 @@ public class MainStage extends Application {
         BorderPane root = new BorderPane();
         root.setCenter(activeRegion);
         root.setBottom(addBut(activeRegion));
-        Scene scene = new Scene(root, WIDTH, HEIGHT); // Размер окна // todo константы
+        Scene scene = new Scene(root, consts.WIDTH, consts.HEIGHT); // Размер окна
 
         stage.setScene(scene);
     }
 
+    private void handleMouseClick(Pane activeRegion, MouseEvent event) {
+        switch (phase) {
+            case 1 -> addNode(activeRegion, event);
+            case 2 -> addConnection(activeRegion, event);
+            case 3 -> {
+            } // Симуляция
+            default -> throw new IllegalStateException("Unknown phase " + phase);
+        }
+    }
 
     private void addNode(Pane activeRegion, MouseEvent event) {
-        Router circle = new Router(SIZE_ROUTER, activeRegion.getChildren().size(), event.getX(), event.getY());
+        Router circle = new Router(consts.SIZE_ROUTER, activeRegion.getChildren().size(), event.getX(), event.getY());
         activeRegion.getChildren().add(circle); // Добавляем круг на сцену
     }
 
@@ -132,5 +133,23 @@ public class MainStage extends Application {
         butPanel.getChildren().add(buttonNext);
 
         return butPanel;
+    }
+
+    private HBox createButtonPanel(Pane activeRegion) {
+        HBox panel = new HBox(10);
+        Text text = new Text("Добавьте узлы коммутаторы");
+        Button nextButton = new Button("Далее");
+
+        nextButton.setOnAction(e -> {
+            phase++;
+            switch (phase) {
+                case 2 -> text.setText("Добавьте связи между коммутаторами");
+                case 3 -> text.setText("Симуляция");
+                case 4 -> text.setText("Перезапустить");
+            }
+        });
+
+        panel.getChildren().addAll(text, nextButton);
+        return panel;
     }
 }

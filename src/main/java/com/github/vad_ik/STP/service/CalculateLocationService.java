@@ -1,17 +1,24 @@
 package com.github.vad_ik.STP.service;
 
+import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.Router;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.github.vad_ik.STP.graphics.utils.WindowConstantHolder.SIZE_ROUTER;
 
 @Service
 public class CalculateLocationService {
 
+    private final WindowConstantHolder consts;
+
+    @Autowired
+    public CalculateLocationService(WindowConstantHolder consts) {
+        this.consts = consts;
+    }
+
     public Router findConnect(Pane activeRegion, double xClick, double yClick) {
-        double min = SIZE_ROUTER;
+        double min = consts.SIZE_ROUTER;
         Router router = null;
         for (int i = 0; i < activeRegion.getChildren().size(); i++) {
             if ((activeRegion.getChildren().get(i)) instanceof Router) {
@@ -27,7 +34,7 @@ public class CalculateLocationService {
         if (router != null) {
 
             router.getCircle().setStroke(Color.GREEN);
-            router.getCircle().setStrokeWidth((double) SIZE_ROUTER / 2);
+            router.getCircle().setStrokeWidth((double) consts.SIZE_ROUTER / 2);
         }
         return router;
     }
