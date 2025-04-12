@@ -17,4 +17,20 @@ public class WindowConstantHolder {
 
     @Value("${fx.TITLE}")
     public String TITLE;
+
+    @Value("${fx.TIME_ANIMATION}")
+    public int TIME_ANIMATION;
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -8,12 +8,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import lombok.Getter;
 
+@Getter
 public class ConnectionRouter extends Pane {
-    Router connectedNode1;
-    Router connectedNode2;
+    private final Switch connectedNode1;
+    private final Switch connectedNode2;
 
-    public ConnectionRouter(Router connectedNode1, Router connectedNode2) {
+    private boolean active;
+
+    public ConnectionRouter(Switch connectedNode1, Switch connectedNode2) {
         this.connectedNode1 = connectedNode1;
         this.connectedNode2 = connectedNode2;
 
@@ -24,7 +28,7 @@ public class ConnectionRouter extends Pane {
         getChildren().add(line);
     }
 
-    public boolean isConnected(Router conn1, Router conn2) {
+    public boolean isConnected(Switch conn1, Switch conn2) {
         return conn1 == connectedNode1 && conn2 == connectedNode2 || conn2 == connectedNode1 && conn1 == connectedNode2;
     }
 
