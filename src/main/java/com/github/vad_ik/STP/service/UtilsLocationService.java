@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LocationService {
+public class UtilsLocationService {
 
     private final WindowConstantHolder consts;
     private Switch connect;
 
     @Autowired
-    public LocationService(WindowConstantHolder consts) {
+    public UtilsLocationService(WindowConstantHolder consts) {
         this.consts = consts;
     }
 
@@ -65,6 +65,8 @@ public class LocationService {
                 activeRegion.getChildren().add(connectionRouter);
                 connect.getConnection().add(connectionRouter);
                 connect2.getConnection().add(connectionRouter);
+                connect.getConnectionToRoot().add(false);
+                connect2.getConnectionToRoot().add(false);
             }
             connect.getCircle().setStrokeWidth(0);
             connect2.getCircle().setStrokeWidth(0);
@@ -72,17 +74,21 @@ public class LocationService {
         connect = null;
 
     }
+
     public void startSTP(Pane activeRegion) {
         for (int i = 0; i < activeRegion.getChildren().size(); i++) {
             if ((activeRegion.getChildren().get(i)) instanceof Switch) {
-                ((Switch) activeRegion.getChildren().get(i)).startSTP(9998);
+                ((Switch) activeRegion.getChildren().get(i)).startSTP(consts.MAX_INT - 1);
             }
         }
     }
 
     public void distanceToRoot(Pane activeRegion) {
         for (int i = 0; i < activeRegion.getChildren().size(); i++) {
-            if ((activeRegion.getChildren().get(i)) instanceof Switch) {
+            if ((activeRegion.getChildren().get(i)) instanceof Switch &&
+                    ((Switch) activeRegion.getChildren().get(i)).getDemonstration().isRoot()
+            ) {
+                ((Switch) activeRegion.getChildren().get(i)).getDemonstration().setLenPathToRoot(0);
                 ((Switch) activeRegion.getChildren().get(i)).distanceToRoot();
             }
         }

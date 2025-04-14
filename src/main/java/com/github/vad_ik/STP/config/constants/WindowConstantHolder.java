@@ -21,6 +21,11 @@ public class WindowConstantHolder {
     @Value("${fx.TIME_ANIMATION}")
     public int TIME_ANIMATION;
 
+    @Value("${int.MAX}")
+    public int MAX_INT;
+
+
+
 
 
 

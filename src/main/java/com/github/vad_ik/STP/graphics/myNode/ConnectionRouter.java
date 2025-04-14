@@ -9,20 +9,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ConnectionRouter extends Pane {
     private final Switch connectedNode1;
     private final Switch connectedNode2;
-
-    private boolean active;
+    Line line;
+    private boolean active=true;
 
     public ConnectionRouter(Switch connectedNode1, Switch connectedNode2) {
         this.connectedNode1 = connectedNode1;
         this.connectedNode2 = connectedNode2;
 
         // Создаем пунктирную линию
-        Line line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
+        line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
         line.setStrokeWidth(2);
         line.setStroke(Color.DARKRED);
         getChildren().add(line);
@@ -63,5 +65,19 @@ public class ConnectionRouter extends Pane {
 
     public void offAnimation() {
         getChildren().remove(1);
+    }
+    public void offLine(){
+        line.setStroke(Color.BLACK);
+    }
+    public void onLine(){
+        line.setStroke(Color.DARKRED);
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectionRouter{" +
+                "connectedNode2=" + connectedNode2.getRouterID() +
+                ", connectedNode1=" + connectedNode1.getRouterID() +
+                '}';
     }
 }

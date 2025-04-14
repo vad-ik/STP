@@ -5,17 +5,13 @@ import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.Switch;
 import javafx.animation.PauseTransition;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
 @Getter
-@Scope("prototype")  // Каждый getBean() создает новый экземпляр
 public class FindRootService {
 
     //STP
@@ -24,7 +20,6 @@ public class FindRootService {
 
     @Autowired
     public FindRootService(WindowConstantHolder windowConstantHolder) {
-
         this.consts = windowConstantHolder;
     }
 
@@ -49,7 +44,7 @@ public class FindRootService {
     private void setRoot(Switch node) {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
 
-            int minRootID=Math.min(connectionRouter.getConnectedNode1().getDemonstration().getRootID(),connectionRouter.getConnectedNode2().getDemonstration().getRootID());
+            int minRootID = Math.min(connectionRouter.getConnectedNode1().getDemonstration().getRootID(), connectionRouter.getConnectedNode2().getDemonstration().getRootID());
 
             if (connectionRouter.getConnectedNode1().getDemonstration().getRootID() < node.getDemonstration().getRootID() ||
                     connectionRouter.getConnectedNode2().getDemonstration().getRootID() < node.getDemonstration().getRootID()) {
@@ -58,10 +53,10 @@ public class FindRootService {
             node.getDemonstration().setRootID(minRootID);
         }
         for (ConnectionRouter connectionRouter : node.getConnection()) {
-            connectionRouter.getConnectedNode1().startSTP( node.getDemonstration().getRootID());
-            connectionRouter.getConnectedNode2().startSTP( node.getDemonstration().getRootID());
+            connectionRouter.getConnectedNode1().startSTP(node.getDemonstration().getRootID());
+            connectionRouter.getConnectedNode2().startSTP(node.getDemonstration().getRootID());
         }
-        if ( node.getDemonstration().isRoot()) {
+        if (node.getDemonstration().isRoot()) {
             node.getNodeType().setText("корневой коммутатор");
         } else {
             node.getNodeType().setText("не корневой коммутатор, присутствует коммутатор с меньшим ID");
@@ -73,12 +68,6 @@ public class FindRootService {
         node.getDemonstration().setRoot(true);
 
         onPath(node);
-    }
-
-    public void setText(Text simulationNowText, String str) {
-        if (simulationNowText != null) {
-            simulationNowText.setText(str);
-        }
     }
 }
 

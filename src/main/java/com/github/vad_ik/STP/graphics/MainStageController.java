@@ -2,7 +2,7 @@ package com.github.vad_ik.STP.graphics;
 
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.Switch;
-import com.github.vad_ik.STP.service.LocationService;
+import com.github.vad_ik.STP.service.UtilsLocationService;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service;
 public class MainStageController {
     private int phase = 1;
 
-    private final LocationService locationService;
+    private final UtilsLocationService utilsLocationService;
     private final WindowConstantHolder consts;
     @Autowired
     private ApplicationContext context;  // Spring сам внедрит контекст
 
     @Autowired
-    public MainStageController(LocationService locationService, WindowConstantHolder windowConstantHolder) {
-        this.locationService = locationService;
+    public MainStageController(UtilsLocationService utilsLocationService, WindowConstantHolder windowConstantHolder) {
+        this.utilsLocationService = utilsLocationService;
         this.consts = windowConstantHolder;
     }
 
@@ -38,7 +38,7 @@ public class MainStageController {
         activeRegion.setOnMouseClicked(event -> {
             switch (phase) {
                 case (1) -> addNode(activeRegion, event);
-                case (2) -> locationService.addConnection(activeRegion, event);
+                case (2) -> utilsLocationService.addConnection(activeRegion, event);
                 case 3, 4 -> {                }
                 default -> throw new IllegalStateException("Unknown phase" + phase);
             }
@@ -69,10 +69,10 @@ public class MainStageController {
                 case 2 -> {
                     text.setText("Поиск корней");
                     phase++;
-                    locationService.startSTP(activeRegion);
+                    utilsLocationService.startSTP(activeRegion);
                 }
                 case 3 -> {
-                    locationService.distanceToRoot(activeRegion);
+                    utilsLocationService.distanceToRoot(activeRegion);
                     phase++;
                     text.setText("Поиск расстояния до корня");
                     //todo сделать перезапуск
