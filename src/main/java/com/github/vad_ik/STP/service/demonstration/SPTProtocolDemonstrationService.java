@@ -1,7 +1,7 @@
 package com.github.vad_ik.STP.service.demonstration;
 
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
-import com.github.vad_ik.STP.graphics.myNode.Switch;
+import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
 import com.github.vad_ik.STP.service.demonstration.step.DistanceToRoot;
 import com.github.vad_ik.STP.service.demonstration.step.FindRootService;
 import lombok.Getter;
@@ -34,11 +34,11 @@ public class SPTProtocolDemonstrationService {
     }
 
 
-    public void startSTP(Switch node) {
+    public void startSTP(SwitchModel node) {
         findRootService.startSTP(node);
     }
 
-    public void distanceToRoot(Switch aSwitch) {
-        distanceToRoot.getDistanceToRoot(aSwitch);
+    public void distanceToRoot(SwitchModel switchModel) {
+        distanceToRoot.getDistanceToRoot(switchModel);
     }
 }

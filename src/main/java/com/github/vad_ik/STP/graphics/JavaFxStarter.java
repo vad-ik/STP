@@ -12,8 +12,8 @@ public class JavaFxStarter extends Application {
     @Override
     public void init() {
         springContext = new SpringApplicationBuilder(StpApplication.class)
-            .headless(false)
-            .run(getParameters().getRaw().toArray(new String[0]));
+                .headless(false)
+                .run(getParameters().getRaw().toArray(new String[0]));
     }
 
     @Override

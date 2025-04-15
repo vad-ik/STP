@@ -14,12 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ConnectionRouter extends Pane {
-    private final Switch connectedNode1;
-    private final Switch connectedNode2;
+    private final SwitchView connectedNode1;
+    private final SwitchView connectedNode2;
     Line line;
-    private boolean active=true;
+    private boolean active = true;
 
-    public ConnectionRouter(Switch connectedNode1, Switch connectedNode2) {
+    public ConnectionRouter(SwitchView connectedNode1, SwitchView connectedNode2) {
         this.connectedNode1 = connectedNode1;
         this.connectedNode2 = connectedNode2;
 
@@ -30,7 +30,7 @@ public class ConnectionRouter extends Pane {
         getChildren().add(line);
     }
 
-    public boolean isConnected(Switch conn1, Switch conn2) {
+    public boolean isConnected(SwitchView conn1, SwitchView conn2) {
         return conn1 == connectedNode1 && conn2 == connectedNode2 || conn2 == connectedNode1 && conn1 == connectedNode2;
     }
 
@@ -66,18 +66,20 @@ public class ConnectionRouter extends Pane {
     public void offAnimation() {
         getChildren().remove(1);
     }
-    public void offLine(){
+
+    public void offLine() {
         line.setStroke(Color.BLACK);
     }
-    public void onLine(){
+
+    public void onLine() {
         line.setStroke(Color.DARKRED);
     }
 
     @Override
     public String toString() {
         return "ConnectionRouter{" +
-                "connectedNode2=" + connectedNode2.getRouterID() +
-                ", connectedNode1=" + connectedNode1.getRouterID() +
+                "connectedNode2=" + connectedNode2.getSwitchModel().getRouterID() +
+                ", connectedNode1=" + connectedNode1.getSwitchModel().getRouterID() +
                 '}';
     }
 }
