@@ -14,16 +14,16 @@ public class ConnectionManager {
     private final FindNode findNode;
 
     @Autowired
-    public ConnectionManager( FindNode findNode) {
+    public ConnectionManager(FindNode findNode) {
         this.findNode = findNode;
     }
-
 
     public void addConnection(Pane activeRegion, MouseEvent event) {
         if (connect == null) {
             connect = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
             return;
         }
+        // TODo это не коннект 2
         SwitchView connect2 = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
         if (connect2 == null) {
             return;
@@ -38,6 +38,7 @@ public class ConnectionManager {
                 }
             }
             if (!ans) {
+                // TODo сложно читать
                 ConnectionRouter connectionRouter = new ConnectionRouter(connect, connect2);
                 activeRegion.getChildren().add(connectionRouter);
                 connect.getSwitchModel().getConnection().add(connectionRouter);
@@ -51,8 +52,4 @@ public class ConnectionManager {
         connect = null;
 
     }
-
-
-
-
 }

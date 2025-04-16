@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FindNode {
-
     private final WindowConstantHolder constants;
+
     @Autowired
     public FindNode(WindowConstantHolder consts) {
         this.constants = consts;

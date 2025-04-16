@@ -23,19 +23,4 @@ public class WindowConstantHolder {
 
     @Value("${int.MAX}")
     public int MAX_INT;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

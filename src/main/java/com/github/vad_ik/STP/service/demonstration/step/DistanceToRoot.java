@@ -2,29 +2,27 @@ package com.github.vad_ik.STP.service.demonstration.step;
 
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@Getter
 @Slf4j
 public class DistanceToRoot {
 
     public void getDistanceToRoot(SwitchModel node) {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
-            SwitchModel node2 = getСonnectionSwitch(node, connectionRouter);
+            SwitchModel node2 = getConnectionSwitch(node, connectionRouter);
+
+// TODO в норм стиль логирования
             log.info("поиск пути до корня от " + node.getRouterID() + " до " + node2.getRouterID());
             double distance = node.getDemonstration().getLenPathToRoot() + getDistance(node, node2);
             if (node2.getDemonstration().getLenPathToRoot() < distance) {
-
                 log.info("возможно есть путь короче:");
                 if (getOtherPathToRoot(node, connectionRouter)) {
                     log.info("есть путь короче");
                     connectionRouter.setActive(false);
                     connectionRouter.offLine();
                 }
-
             } else {
                 log.info("это кротчайший путь");
                 node2.getDemonstration().setLenPathToRoot(distance);
@@ -39,7 +37,6 @@ public class DistanceToRoot {
                         node2.getConnection().get(i).offLine();
                     }
                 }
-
                 node2.distanceToRoot();
             }
         }
@@ -58,8 +55,7 @@ public class DistanceToRoot {
             if (node.getConnectionToRoot().get(i)
                     && node.getConnection().get(i) != connection
                     && node.getConnection().get(i).isActive()) {
-                log.info("" + node.getConnection().get(i));
-
+                log.info("get i connection: {}", node.getConnection().get(i));
                 return true;
             }
         }
@@ -73,7 +69,7 @@ public class DistanceToRoot {
         }
     }
 
-    private SwitchModel getСonnectionSwitch(SwitchModel node, ConnectionRouter connection) {
+    private SwitchModel getConnectionSwitch(SwitchModel node, ConnectionRouter connection) {
         if (connection.getConnectedNode1().getSwitchModel() == node) {
             return connection.getConnectedNode2().getSwitchModel();
         } else {
@@ -86,8 +82,5 @@ public class DistanceToRoot {
         double distY = node1.getY() - node2.getY();
 
         return Math.sqrt(distX * distX + distY * distY);
-
     }
-
-
 }

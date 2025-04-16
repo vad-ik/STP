@@ -16,13 +16,14 @@ import lombok.Setter;
 public class ConnectionRouter extends Pane {
     private final SwitchView connectedNode1;
     private final SwitchView connectedNode2;
-    Line line;
     private boolean active = true;
+    private final Line line;
 
     public ConnectionRouter(SwitchView connectedNode1, SwitchView connectedNode2) {
         this.connectedNode1 = connectedNode1;
         this.connectedNode2 = connectedNode2;
 
+        // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
         // Создаем пунктирную линию
         line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
         line.setStrokeWidth(2);
@@ -38,8 +39,10 @@ public class ConnectionRouter extends Pane {
         // Создаем линию (горизонтальную или под углом)
         Line line;
         if (direction) {
+            // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
             line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
         } else {
+            // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
             line = new Line(connectedNode2.getX(), connectedNode2.getY(), connectedNode1.getX(), connectedNode1.getY());
         }
         line.setStroke(Color.ANTIQUEWHITE);

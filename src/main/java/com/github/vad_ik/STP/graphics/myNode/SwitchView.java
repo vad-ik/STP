@@ -32,19 +32,19 @@ public class SwitchView extends Pane {
         switchModel = switchModelProvider.getObject();
         switchModel.initialize(routerID, x, y);
 
-
+// TODO мб в утилсы
         circle = new Circle(size);
         circle.setCenterX(x);
         circle.setCenterY(y);
         circle.setFill(Color.BLUE);     // Цвет круга
         this.getChildren().add(circle);
-
+// TODO мб в константы
         nodeIdText = new Text(x + 1.5 * size, y - 1.5 * size, "" + routerID);
         this.getChildren().add(nodeIdText);
-
+// TODO мб в константы
         nodeType = new Text(x, y + 2 * size, "");
         this.getChildren().add(nodeType);
-
+// TODO мб в константы
         distanceText = new Text(x, y + 4 * size, "");
         this.getChildren().add(distanceText);
         switchModel.addListener(updatedModel ->
@@ -57,7 +57,6 @@ public class SwitchView extends Pane {
             } else {
                 nodeType.setText("не корневой коммутатор, присутствует коммутатор с меньшим ID");
             }
-
         });
     }
 
@@ -72,5 +71,4 @@ public class SwitchView extends Pane {
     public SPTProtocolDemonstrationService getDemonstration() {
         return switchModel.getDemonstration();
     }
-
 }

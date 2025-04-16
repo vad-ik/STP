@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 @Setter
 @Scope("prototype")  // Каждый getBean() создает новый экземпляр
 public class SPTProtocolDemonstrationService {
-
-    //STP
+    // TODo это скорее модель - скорее всего это компонент
     private boolean root = false;
     private boolean signalReceived = false;
     private int rootID;
@@ -32,7 +31,6 @@ public class SPTProtocolDemonstrationService {
         rootID = consts.MAX_INT;
         lenPathToRoot = consts.MAX_INT;
     }
-
 
     public void startSTP(SwitchModel node) {
         findRootService.startSTP(node);

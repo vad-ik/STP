@@ -6,15 +6,11 @@ import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@Getter
 public class FindRootService {
-
-    //STP
 
     private final WindowConstantHolder consts;
 
@@ -25,6 +21,7 @@ public class FindRootService {
 
     private void onPath(SwitchModel node) {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
+            // TODo сложно читать
             connectionRouter.activateAnimation(connectionRouter.getConnectedNode2().getSwitchModel() == node);
         }
         PauseTransition delay = new PauseTransition(Duration.seconds(consts.TIME_ANIMATION));
@@ -46,6 +43,7 @@ public class FindRootService {
 
             int minRootID = Math.min(connectionRouter.getConnectedNode1().getDemonstration().getRootID(), connectionRouter.getConnectedNode2().getDemonstration().getRootID());
 
+            // TODo сложно читать
             if (connectionRouter.getConnectedNode1().getDemonstration().getRootID() < node.getDemonstration().getRootID() ||
                     connectionRouter.getConnectedNode2().getDemonstration().getRootID() < node.getDemonstration().getRootID()) {
                 node.getDemonstration().setRoot(false);
@@ -53,6 +51,7 @@ public class FindRootService {
             node.getDemonstration().setRootID(minRootID);
         }
         for (ConnectionRouter connectionRouter : node.getConnection()) {
+            // TODo сложно читать
             connectionRouter.getConnectedNode1().getSwitchModel().startSTP(node.getDemonstration().getRootID());
             connectionRouter.getConnectedNode2().getSwitchModel().startSTP(node.getDemonstration().getRootID());
         }
@@ -62,9 +61,9 @@ public class FindRootService {
     public void startSTP(SwitchModel node) {
         node.getDemonstration().setRootID(node.getRouterID());
         node.getDemonstration().setRoot(true);
-
         onPath(node);
     }
+
 }
 
 

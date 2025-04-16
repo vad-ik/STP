@@ -26,7 +26,6 @@ public class SwitchModel {
         this.demonstration = demonstration;
     }
 
-
     public void initialize( int routerID, double x, double y) {
         this.routerID = routerID;
         this.x = x;

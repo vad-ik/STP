@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: STP
+fx:
+  TITLE: STP
+  WIDTH: 800
+  HEIGHT: 600
+  SIZE_ROUTER: 10
+  TIME_ANIMATION: 2
+int:
+  MAX: 2147483647

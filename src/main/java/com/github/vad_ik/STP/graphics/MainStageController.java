@@ -1,7 +1,6 @@
 package com.github.vad_ik.STP.graphics;
 
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
-import com.github.vad_ik.STP.graphics.clickHandler.MainStageClickHandler;
 import com.github.vad_ik.STP.graphics.myNode.SwitchView;
 import com.github.vad_ik.STP.service.PhaseManager;
 import javafx.scene.Scene;
@@ -14,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,10 +22,9 @@ public class MainStageController {
     private final ObjectProvider<SwitchView> switchViewProvider;
 
     @Autowired
-    private ApplicationContext context;  // Spring сам внедрит контекст
-
-    @Autowired
-    public MainStageController(WindowConstantHolder windowConstantHolder, PhaseManager phaseManager, ObjectProvider<SwitchView> switchViewProvider) {
+    public MainStageController(WindowConstantHolder windowConstantHolder,
+                               PhaseManager phaseManager,
+                               ObjectProvider<SwitchView> switchViewProvider) {
         this.constants = windowConstantHolder;
         this.phaseManager = phaseManager;
         this.switchViewProvider = switchViewProvider;
@@ -39,12 +36,11 @@ public class MainStageController {
         Pane activeRegion = new Pane(); // Контейнер для кругов
 
         // Обработчик клика мыши
-        MainStageClickHandler clickHandler = new MainStageClickHandler(
-                phaseManager::getPhase,  // Передаём текущую фазу
+        phaseManager.setOnPhaseActions(
                 event -> addNode(activeRegion, event),  // Действие для фазы 1
                 event -> phaseManager.getConnectionManager().addConnection(activeRegion, event)  // Действие для фазы 2
         );
-        activeRegion.setOnMouseClicked(clickHandler::handle);
+        activeRegion.setOnMouseClicked(phaseManager::handleMouseClick);
         BorderPane root = new BorderPane();
         root.setCenter(activeRegion);
         root.setBottom(createButtonPanel(activeRegion));
@@ -64,16 +60,14 @@ public class MainStageController {
     }
 
     private HBox createButtonPanel(Pane activeRegion) {
-        HBox panel = new HBox(10);
-        Text text = new Text("Добавьте узлы коммутаторы");
-        Button nextButton = new Button("Далее");
+        HBox panel = new HBox(10); // TODO мб в константы
+        Text text = new Text("Добавьте узлы коммутаторы");// TODO мб в константы
+        Button nextButton = new Button("Далее");// TODO мб в константы
         Text simulationNowText = new Text();
         nextButton.setOnAction(e -> {
-            phaseManager.handlerPhase(text, activeRegion);
+            phaseManager.handlePhase(text, activeRegion);
         });
         panel.getChildren().addAll(text, nextButton, simulationNowText);
         return panel;
     }
-
-
 }
