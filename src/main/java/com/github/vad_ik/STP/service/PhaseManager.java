@@ -1,5 +1,6 @@
 package com.github.vad_ik.STP.service;
 
+import com.github.vad_ik.STP.service.demonstration.VisualizationQueue;
 import com.github.vad_ik.STP.service.mainStageService.ConnectionManager;
 import com.github.vad_ik.STP.service.mainStageService.FindNode;
 import com.github.vad_ik.STP.service.mainStageService.StartSTP;
@@ -21,12 +22,15 @@ public class PhaseManager {
     private final ConnectionManager connectionManager;
     private Consumer<MouseEvent> onPhase1Action;
     private Consumer<MouseEvent> onPhase2Action;
+    private boolean startStep = false;
+    private final VisualizationQueue queue;
 
     @Autowired
-    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager) {
+    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager, VisualizationQueue queue) {
         this.startSTP = startSTP;
         this.findNode = findNode;
         this.connectionManager = connectionManager;
+        this.queue = queue;
     }
 
     public void setOnPhaseActions(Consumer<MouseEvent> onPhase1Action,
@@ -38,12 +42,12 @@ public class PhaseManager {
     public void handlePhase(Text text, Pane activeRegion) {
         switch (phase) {
             case 1 -> {
-                text.setText("Добавьте связи между коммутаторами");
-                phase++;
+                task1(text);
             }
             case 2 -> {
                 text.setText("Поиск корней");
                 phase++;
+                startSTP.setActive(true);
                 startSTP.startSTP(activeRegion);
             }
             case 3 -> {
@@ -57,6 +61,54 @@ public class PhaseManager {
 //                    text.setText("Добавьте связи между коммутаторами");
             }
             default -> throw new IllegalStateException("Unknown phase" + phase);
+        }
+    }
+
+    public void handleStep(Text text, Pane activeRegion) {
+        switch (phase) {
+            case 1 -> {
+                task1(text);
+            }
+            case 2 -> {
+                task2(text, activeRegion);
+            }
+            case 3 -> {
+
+            }
+            case 4 -> {
+//                    phase = 2;
+//                    text.setText("Добавьте связи между коммутаторами");
+            }
+            default -> throw new IllegalStateException("Unknown phase" + phase);
+        }
+    }
+
+    public void task1(Text text) {
+        text.setText("Добавьте связи между коммутаторами");
+        phase++;
+    }
+
+    public void task2(Text text, Pane activeRegion) {
+
+        System.out.println(queue.isEmpty());
+
+        if (!startStep) {
+            startStep=true;
+            text.setText("Поиск корней");
+            startSTP.setActive(false);
+            startSTP.startSTP(activeRegion);
+        }
+        if (queue.isEmpty()) {
+            phase++;
+            phase++;
+            text.setText("Поиск расстояния до корня");
+            return;
+        }
+        var nextNode = queue.getNext();
+        System.out.println(nextNode.getKey().getKey().getRouterID());
+        boolean ans = nextNode.getKey().getKey().startSTP(nextNode.getKey().getValue(), nextNode.getValue());
+        if (!ans) {
+            task2(text, activeRegion);
         }
     }
 

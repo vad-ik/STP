@@ -1,8 +1,9 @@
 package com.github.vad_ik.STP.graphics.myNode;
 
+import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.service.demonstration.SPTProtocolDemonstrationService;
+import com.github.vad_ik.STP.utils.FxUtils;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import lombok.Getter;
@@ -20,11 +21,14 @@ public class SwitchView extends Pane {
     private Text distanceText;
     private Text nodeIdText;
     private SwitchModel switchModel;
+    private final WindowConstantHolder constant;
+
 
     private final ObjectProvider<SwitchModel> switchModelProvider;
 
     @Autowired
-    public SwitchView(ObjectProvider<SwitchModel> switchModelProvider) {
+    public SwitchView(WindowConstantHolder constant, ObjectProvider<SwitchModel> switchModelProvider) {
+        this.constant = constant;
         this.switchModelProvider = switchModelProvider;
     }
 
@@ -32,30 +36,25 @@ public class SwitchView extends Pane {
         switchModel = switchModelProvider.getObject();
         switchModel.initialize(routerID, x, y);
 
-// TODO мб в утилсы
-        circle = new Circle(size);
-        circle.setCenterX(x);
-        circle.setCenterY(y);
-        circle.setFill(Color.BLUE);     // Цвет круга
-        this.getChildren().add(circle);
+        circle = FxUtils.getCircle(size, x, y, constant.COLOR_NODE);
+        getChildren().add(circle);
 // TODO мб в константы
         nodeIdText = new Text(x + 1.5 * size, y - 1.5 * size, "" + routerID);
-        this.getChildren().add(nodeIdText);
-// TODO мб в константы
+        getChildren().add(nodeIdText);
         nodeType = new Text(x, y + 2 * size, "");
-        this.getChildren().add(nodeType);
-// TODO мб в константы
+        getChildren().add(nodeType);
         distanceText = new Text(x, y + 4 * size, "");
-        this.getChildren().add(distanceText);
+        getChildren().add(distanceText);
+
         switchModel.addListener(updatedModel ->
         {
             if (updatedModel.getDistanceToRoot() != null) {
-                distanceText.setText("Расстояние до корня: " + updatedModel.getDistanceToRoot());
+                distanceText.setText(constant.LEN_TO_ROOT + updatedModel.getDistanceToRoot());
             }
             if (updatedModel.isNodeType()) {
-                nodeType.setText("корневой коммутатор");
+                nodeType.setText(constant.IS_ROOT);
             } else {
-                nodeType.setText("не корневой коммутатор, присутствует коммутатор с меньшим ID");
+                nodeType.setText(constant.IS_NOT_ROOT);
             }
         });
     }

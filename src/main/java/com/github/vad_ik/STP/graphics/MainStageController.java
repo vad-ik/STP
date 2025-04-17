@@ -61,13 +61,16 @@ public class MainStageController {
 
     private HBox createButtonPanel(Pane activeRegion) {
         HBox panel = new HBox(10); // TODO мб в константы
-        Text text = new Text("Добавьте узлы коммутаторы");// TODO мб в константы
-        Button nextButton = new Button("Далее");// TODO мб в константы
-        Text simulationNowText = new Text();
-        nextButton.setOnAction(e -> {
+        Text text = new Text(constants.ADD_NODE);
+        Button nextPhase = new Button(constants.NEXT);
+        nextPhase.setOnAction(e -> {
             phaseManager.handlePhase(text, activeRegion);
         });
-        panel.getChildren().addAll(text, nextButton, simulationNowText);
+        Button nextStep = new Button(constants.NEXT_STEP);
+        nextStep.setOnAction(e -> {
+            phaseManager.handleStep(text, activeRegion);
+        });
+        panel.getChildren().addAll(text, nextPhase,nextStep);
         return panel;
     }
 }

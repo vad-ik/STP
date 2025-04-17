@@ -13,30 +13,31 @@ import java.util.function.Consumer;
 @Service
 @Scope("prototype")  // Каждый вызов getBean() создаёт новый экземпляр
 public class SwitchModel {
-    private  int routerID;
-    private  double x;
-    private  double y;
+    private int routerID;
+    private double x;
+    private double y;
     private final ArrayList<ConnectionRouter> connection = new ArrayList<>();
     private final ArrayList<Boolean> connectionToRoot = new ArrayList<>();
     private final SPTProtocolDemonstrationService demonstration;
     private Double distanceToRoot;
     private boolean nodeType = false;
 
-    public SwitchModel( SPTProtocolDemonstrationService demonstration){
+    public SwitchModel(SPTProtocolDemonstrationService demonstration) {
         this.demonstration = demonstration;
     }
 
-    public void initialize( int routerID, double x, double y) {
+    public void initialize(int routerID, double x, double y) {
         this.routerID = routerID;
         this.x = x;
         this.y = y;
 
     }
 
-    public void startSTP(int rootID) {
+    public boolean startSTP(int rootID, ConnectionRouter lastConnection) {
         if (demonstration.getRootID() > rootID) {
-            demonstration.startSTP(this);
-        }
+            demonstration.startSTP(this,  lastConnection);
+            return true;
+        }else return false;
     }
 
     public void distanceToRoot() {
@@ -57,5 +58,14 @@ public class SwitchModel {
     public void setNodeType(boolean isRoot) {
         this.nodeType = isRoot;
         listeners.forEach(l -> l.accept(this)); // Уведомляем подписчиков
+    }
+
+    public int getRootID() {
+        return demonstration.getRootID();
+    }
+
+    public void addConnection(ConnectionRouter connectionRouter) {
+        connection.add(connectionRouter);
+        connectionToRoot.add(false);
     }
 }

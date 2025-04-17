@@ -1,34 +1,36 @@
 package com.github.vad_ik.STP.graphics.myNode;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
+import com.github.vad_ik.STP.utils.FxUtils;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-public class ConnectionRouter extends Pane {
-    private final SwitchView connectedNode1;
-    private final SwitchView connectedNode2;
-    private boolean active = true;
-    private final Line line;
+@Component
+@Scope("prototype")
 
-    public ConnectionRouter(SwitchView connectedNode1, SwitchView connectedNode2) {
+
+public class ConnectionRouter extends Pane {
+    private SwitchView connectedNode1;
+    private SwitchView connectedNode2;
+    private boolean active = true;
+    private final WindowConstantHolder constant;
+    private Line meinLine;
+
+    public ConnectionRouter(WindowConstantHolder constant) {
+        this.constant = constant;
+    }
+
+    public void init(SwitchView connectedNode1, SwitchView connectedNode2) {
         this.connectedNode1 = connectedNode1;
         this.connectedNode2 = connectedNode2;
-
-        // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
-        // Создаем пунктирную линию
-        line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
-        line.setStrokeWidth(2);
-        line.setStroke(Color.DARKRED);
-        getChildren().add(line);
+        meinLine = FxUtils.getLine(connectedNode1, connectedNode2, constant.WIDTH_LINE, constant.COLOR_LINE);
+        getChildren().add(meinLine);
     }
 
     public boolean isConnected(SwitchView conn1, SwitchView conn2) {
@@ -36,34 +38,14 @@ public class ConnectionRouter extends Pane {
     }
 
     public void activateAnimation(boolean direction) {
-        // Создаем линию (горизонтальную или под углом)
         Line line;
         if (direction) {
-            // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
-            line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
+            line = FxUtils.getLine(connectedNode1, connectedNode2, constant.WIDTH_DOTTED_LINE, constant.COLOR_DOTTED_LINE);
         } else {
-            // TODO сделать утилс, который создлаёт элементы  getLine(SwitchView connectedNode1, SwitchView connectedNode2)
-            line = new Line(connectedNode2.getX(), connectedNode2.getY(), connectedNode1.getX(), connectedNode1.getY());
+            line = FxUtils.getLine(connectedNode2, connectedNode1, constant.WIDTH_DOTTED_LINE, constant.COLOR_DOTTED_LINE);
         }
-        line.setStroke(Color.ANTIQUEWHITE);
-        line.setStrokeWidth(3);
-
-        // Настройка пунктира (длина штриха и пробела)
-        double len = 5;
-        line.getStrokeDashArray().addAll(len, len * 2);
-
-        // Устанавливаем начальное смещение
-        line.setStrokeDashOffset(0);
-
+        FxUtils.setDotted(line);
         getChildren().add(line);
-
-        // Анимация движения пунктира
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(line.strokeDashOffsetProperty(), 0)),
-                new KeyFrame(Duration.seconds(1), new KeyValue(line.strokeDashOffsetProperty(), 3 * len))
-        );
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
     }
 
     public void offAnimation() {
@@ -71,18 +53,30 @@ public class ConnectionRouter extends Pane {
     }
 
     public void offLine() {
-        line.setStroke(Color.BLACK);
+        meinLine.setStroke(constant.COLOR_OFF_LINE);
+        meinLine.setStrokeWidth(constant.WIDTH_OFF_LINE);
     }
 
     public void onLine() {
-        line.setStroke(Color.DARKRED);
+        meinLine.setStroke(constant.COLOR_LINE);
+        meinLine.setStrokeWidth(constant.WIDTH_LINE);
     }
 
-    @Override
-    public String toString() {
-        return "ConnectionRouter{" +
-                "connectedNode2=" + connectedNode2.getSwitchModel().getRouterID() +
-                ", connectedNode1=" + connectedNode1.getSwitchModel().getRouterID() +
-                '}';
+    public SwitchModel getModel1() {
+        return connectedNode1.getSwitchModel();
+    }
+
+    public SwitchModel getModel2() {
+        return connectedNode2.getSwitchModel();
+    }
+
+    public int getRootIDSwitch(int switchNum) {
+        int ans;
+        switch (switchNum) {
+            case 1 -> ans = connectedNode1.getDemonstration().getRootID();
+            case 2 -> ans = connectedNode2.getDemonstration().getRootID();
+            default -> throw new IllegalStateException("Unknown switchNum" + switchNum);
+        }
+        return ans;
     }
 }

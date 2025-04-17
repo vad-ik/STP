@@ -1,55 +1,53 @@
 package com.github.vad_ik.STP.service.mainStageService;
 
-import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ConnectionManager {
-    private SwitchView connect;
+    private SwitchView selectedNode;
     private final FindNode findNode;
+    private final ObjectProvider<ConnectionRouter> ConnectionRouterProvider;
 
     @Autowired
-    public ConnectionManager(FindNode findNode) {
+    public ConnectionManager(FindNode findNode, ObjectProvider<ConnectionRouter> connectionRouterProvider) {
         this.findNode = findNode;
+        ConnectionRouterProvider = connectionRouterProvider;
     }
 
     public void addConnection(Pane activeRegion, MouseEvent event) {
-        if (connect == null) {
-            connect = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
+        if (selectedNode == null) {
+            selectedNode = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
             return;
         }
-        // TODo это не коннект 2
-        SwitchView connect2 = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
-        if (connect2 == null) {
+        SwitchView selectedNode2 = findNode.searchForTheNearestNode(activeRegion, event.getX(), event.getY());
+        if (selectedNode2 == null) {
             return;
         }
-        if (connect2 == connect) {
-            connect.getCircle().setStrokeWidth(0);
+        if (selectedNode2 == selectedNode) {
+            selectedNode.getCircle().setStrokeWidth(0);
         } else {
             boolean ans = false;
             for (int i = 0; i < activeRegion.getChildren().size(); i++) {
                 if ((activeRegion.getChildren().get(i)) instanceof ConnectionRouter) {
-                    ans = ans || ((ConnectionRouter) activeRegion.getChildren().get(i)).isConnected(connect, connect2);
+                    ans = ans || ((ConnectionRouter) activeRegion.getChildren().get(i)).isConnected(selectedNode, selectedNode2);
                 }
             }
             if (!ans) {
-                // TODo сложно читать
-                ConnectionRouter connectionRouter = new ConnectionRouter(connect, connect2);
+                ConnectionRouter connectionRouter = ConnectionRouterProvider.getObject();
+                connectionRouter.init(selectedNode, selectedNode2);
                 activeRegion.getChildren().add(connectionRouter);
-                connect.getSwitchModel().getConnection().add(connectionRouter);
-                connect2.getSwitchModel().getConnection().add(connectionRouter);
-                connect.getSwitchModel().getConnectionToRoot().add(false);
-                connect2.getSwitchModel().getConnectionToRoot().add(false);
+                selectedNode.getSwitchModel().addConnection(connectionRouter);
+                selectedNode2.getSwitchModel().addConnection(connectionRouter);
             }
-            connect.getCircle().setStrokeWidth(0);
-            connect2.getCircle().setStrokeWidth(0);
+            selectedNode.getCircle().setStrokeWidth(0);
+            selectedNode2.getCircle().setStrokeWidth(0);
         }
-        connect = null;
-
+        selectedNode = null;
     }
 }

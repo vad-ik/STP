@@ -13,18 +13,13 @@ public class DistanceToRoot {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
             SwitchModel node2 = getConnectionSwitch(node, connectionRouter);
 
-// TODO в норм стиль логирования
-            log.info("поиск пути до корня от " + node.getRouterID() + " до " + node2.getRouterID());
             double distance = node.getDemonstration().getLenPathToRoot() + getDistance(node, node2);
             if (node2.getDemonstration().getLenPathToRoot() < distance) {
-                log.info("возможно есть путь короче:");
                 if (getOtherPathToRoot(node, connectionRouter)) {
-                    log.info("есть путь короче");
                     connectionRouter.setActive(false);
                     connectionRouter.offLine();
                 }
             } else {
-                log.info("это кротчайший путь");
                 node2.getDemonstration().setLenPathToRoot(distance);
                 activeAll(node2);
                 delNonShortCat(node, connectionRouter);
@@ -55,7 +50,6 @@ public class DistanceToRoot {
             if (node.getConnectionToRoot().get(i)
                     && node.getConnection().get(i) != connection
                     && node.getConnection().get(i).isActive()) {
-                log.info("get i connection: {}", node.getConnection().get(i));
                 return true;
             }
         }
@@ -70,10 +64,10 @@ public class DistanceToRoot {
     }
 
     private SwitchModel getConnectionSwitch(SwitchModel node, ConnectionRouter connection) {
-        if (connection.getConnectedNode1().getSwitchModel() == node) {
-            return connection.getConnectedNode2().getSwitchModel();
+        if (connection.getModel1() == node) {
+            return connection.getModel2();
         } else {
-            return connection.getConnectedNode1().getSwitchModel();
+            return connection.getModel1();
         }
     }
 

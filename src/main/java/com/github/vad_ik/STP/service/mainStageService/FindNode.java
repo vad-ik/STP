@@ -3,7 +3,6 @@ package com.github.vad_ik.STP.service.mainStageService;
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.SwitchView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class FindNode {
         }
         if (router != null) {
 
-            router.getCircle().setStroke(Color.GREEN);
+            router.getCircle().setStroke(constants.COLOR_NODE_ACTIVE);
             router.getCircle().setStrokeWidth((double) constants.SIZE_ROUTER / 2);
         }
         return router;
