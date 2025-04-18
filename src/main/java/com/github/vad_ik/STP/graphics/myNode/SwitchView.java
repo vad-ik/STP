@@ -1,6 +1,7 @@
 package com.github.vad_ik.STP.graphics.myNode;
 
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
+import com.github.vad_ik.STP.graphics.NodeTableUI;
 import com.github.vad_ik.STP.service.demonstration.SPTProtocolDemonstrationService;
 import com.github.vad_ik.STP.utils.FxUtils;
 import javafx.scene.layout.Pane;
@@ -22,13 +23,14 @@ public class SwitchView extends Pane {
     private Text nodeIdText;
     private SwitchModel switchModel;
     private final WindowConstantHolder constant;
-
+    private final NodeTableUI nodeTableUI;
 
     private final ObjectProvider<SwitchModel> switchModelProvider;
 
     @Autowired
-    public SwitchView(WindowConstantHolder constant, ObjectProvider<SwitchModel> switchModelProvider) {
+    public SwitchView(WindowConstantHolder constant, NodeTableUI nodeTableUI, ObjectProvider<SwitchModel> switchModelProvider) {
         this.constant = constant;
+        this.nodeTableUI = nodeTableUI;
         this.switchModelProvider = switchModelProvider;
     }
 
@@ -49,14 +51,18 @@ public class SwitchView extends Pane {
         switchModel.addListener(updatedModel ->
         {
             if (updatedModel.getDistanceToRoot() != null) {
-                distanceText.setText(constant.LEN_TO_ROOT + updatedModel.getDistanceToRoot());
-            }
-            if (updatedModel.isNodeType()) {
-                nodeType.setText(constant.IS_ROOT);
-            } else {
-                nodeType.setText(constant.IS_NOT_ROOT);
+                nodeTableUI.setDist(routerID,
+                        updatedModel.isNodeType()?constant.IS_ROOT:constant.IS_NOT_ROOT,
+                        updatedModel.getDistanceToRoot());
+            }else {
+                if (updatedModel.isNodeType()) {
+                    nodeTableUI.setDist(routerID, constant.IS_ROOT,0);
+                } else {
+                    nodeTableUI.setRoot(routerID, constant.IS_NOT_ROOT);
+                }
             }
         });
+        nodeTableUI.addNode(routerID);
     }
 
     public double getX() {

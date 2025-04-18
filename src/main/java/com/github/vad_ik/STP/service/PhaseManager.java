@@ -23,6 +23,7 @@ public class PhaseManager {
     private final ConnectionManager connectionManager;
     private Consumer<MouseEvent> onPhase1Action;
     private Consumer<MouseEvent> onPhase2Action;
+    private Consumer<MouseEvent> onPhase3Action;
     private boolean startStep = false;
     private final VisualizationQueueFindRoot queueFindRoot;
     private final VisualizationQueueDistanceToRoot queueDistanceToRoot;
@@ -38,9 +39,11 @@ public class PhaseManager {
     }
 
     public void setOnPhaseActions(Consumer<MouseEvent> onPhase1Action,
-                                  Consumer<MouseEvent> onPhase2Action) {
+                                  Consumer<MouseEvent> onPhase2Action,
+                                  Consumer<MouseEvent> onPhase3Action) {
         this.onPhase1Action = onPhase1Action;
         this.onPhase2Action = onPhase2Action;
+        this.onPhase3Action = onPhase3Action;
     }
 
     public void handlePhase(Text text, Pane activeRegion) {
@@ -145,7 +148,10 @@ task3(text, activeRegion);
         switch (phase) {
             case 1 -> onPhase1Action.accept(event);
             case 2 -> onPhase2Action.accept(event);
-            case 3, 4 -> {
+            case 3 -> {
+            }
+            case 4 ->{
+                onPhase3Action.accept(event);
             }
             default -> throw new IllegalStateException("Unknown phase" + phase);
         }

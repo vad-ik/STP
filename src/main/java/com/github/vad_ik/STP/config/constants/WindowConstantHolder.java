@@ -63,6 +63,7 @@ public class WindowConstantHolder {
     public Color COLOR_NODE = Color.BLUE;
     // @Value("${fx.COLOR_NODE_ACTIVE}")
     public Color COLOR_NODE_ACTIVE = Color.GREEN;
+    public Color COLOR_NODE_DISABLE = Color.BLACK;
 
 
 }

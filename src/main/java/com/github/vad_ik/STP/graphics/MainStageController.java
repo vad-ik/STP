@@ -3,6 +3,7 @@ package com.github.vad_ik.STP.graphics;
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.SwitchView;
 import com.github.vad_ik.STP.service.PhaseManager;
+import com.github.vad_ik.STP.service.demonstration.step.DisableNodeService;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -20,14 +21,18 @@ public class MainStageController {
     private final WindowConstantHolder constants;
     private final PhaseManager phaseManager;
     private final ObjectProvider<SwitchView> switchViewProvider;
+    private final NodeTableUI nodeTableUI;
+    private final DisableNodeService disableNodeService;
 
     @Autowired
     public MainStageController(WindowConstantHolder windowConstantHolder,
                                PhaseManager phaseManager,
-                               ObjectProvider<SwitchView> switchViewProvider) {
+                               ObjectProvider<SwitchView> switchViewProvider, NodeTableUI nodeTableUI, DisableNodeService disableNodeService) {
         this.constants = windowConstantHolder;
         this.phaseManager = phaseManager;
         this.switchViewProvider = switchViewProvider;
+        this.nodeTableUI = nodeTableUI;
+        this.disableNodeService = disableNodeService;
     }
 
     public void start(Stage stage) {
@@ -38,14 +43,18 @@ public class MainStageController {
         // Обработчик клика мыши
         phaseManager.setOnPhaseActions(
                 event -> addNode(activeRegion, event),  // Действие для фазы 1
-                event -> phaseManager.getConnectionManager().addConnection(activeRegion, event)  // Действие для фазы 2
+                event -> phaseManager.getConnectionManager().addConnection(activeRegion, event),  // Действие для фазы 2
+                event -> disableNodeService.disable(activeRegion, event)
         );
         activeRegion.setOnMouseClicked(phaseManager::handleMouseClick);
         BorderPane root = new BorderPane();
         root.setCenter(activeRegion);
         root.setBottom(createButtonPanel(activeRegion));
+        root.setRight(nodeTableUI);
         Scene scene = new Scene(root, constants.WIDTH, constants.HEIGHT); // Размер окна
         stage.setScene(scene);
+//        System.out.println(stage.getHeight());
+//        System.out.println(stage.getWidth());
     }
 
     private void addNode(Pane activeRegion, MouseEvent event) {

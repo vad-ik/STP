@@ -23,6 +23,9 @@ public class FindRootService {
     }
 
     private void onPath(SwitchModel node, ConnectionRouter lastConnection) {
+        if (node.isDisable()){
+            return;
+        }
         for (ConnectionRouter connectionRouter : node.getConnection()) {
             connectionRouter.activateAnimation(connectionRouter.getModel2() == node);
         }

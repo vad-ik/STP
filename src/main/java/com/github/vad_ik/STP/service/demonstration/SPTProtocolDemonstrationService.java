@@ -38,6 +38,6 @@ public class SPTProtocolDemonstrationService {
     }
 
     public void distanceToRoot(SwitchModel switchModel) {
-        distanceToRoot.getDistanceToRoot(switchModel);
+        distanceToRoot.onPath(switchModel);
     }
 }

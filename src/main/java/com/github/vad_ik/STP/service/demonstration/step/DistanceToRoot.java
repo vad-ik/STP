@@ -1,8 +1,11 @@
 package com.github.vad_ik.STP.service.demonstration.step;
 
+import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
 import com.github.vad_ik.STP.service.demonstration.step.queue.VisualizationQueueDistanceToRoot;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +13,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DistanceToRoot {
    private final VisualizationQueueDistanceToRoot queueDistanceToRoot;
+   private final WindowConstantHolder consts;
 
-    public DistanceToRoot(VisualizationQueueDistanceToRoot queueDistanceToRoot) {
+    public DistanceToRoot(VisualizationQueueDistanceToRoot queueDistanceToRoot, WindowConstantHolder constant) {
         this.queueDistanceToRoot = queueDistanceToRoot;
+        this.consts = constant;
     }
-
-    public void getDistanceToRoot(SwitchModel node) {
+    public void onPath(SwitchModel node) {
+        if (node.isDisable()){
+            return;
+        }
+        for (ConnectionRouter connectionRouter : node.getConnection()) {
+            connectionRouter.activateAnimation(connectionRouter.getModel2() == node);
+        }
+        PauseTransition delay = new PauseTransition(Duration.millis(consts.TIME_ANIMATION));
+        delay.setOnFinished(event -> offPath(node));
+        delay.play();
+    }
+    private void offPath(SwitchModel node ) {
+        for (ConnectionRouter connectionRouter : node.getConnection()) {
+            while (connectionRouter.getChildren().size() > 1) {
+                connectionRouter.offAnimation();
+            }
+        }
+        getDistanceToRoot(node);
+    }
+    private void getDistanceToRoot(SwitchModel node) {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
             SwitchModel node2 = getConnectionSwitch(node, connectionRouter);
 

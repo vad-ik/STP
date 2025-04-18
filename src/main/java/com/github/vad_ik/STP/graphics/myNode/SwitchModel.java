@@ -2,6 +2,7 @@ package com.github.vad_ik.STP.graphics.myNode;
 
 import com.github.vad_ik.STP.service.demonstration.SPTProtocolDemonstrationService;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class SwitchModel {
     private final SPTProtocolDemonstrationService demonstration;
     private Double distanceToRoot;
     private boolean nodeType = false;
+    @Setter
+    private boolean disable=false;
 
     public SwitchModel(SPTProtocolDemonstrationService demonstration) {
         this.demonstration = demonstration;
