@@ -4,7 +4,7 @@ package com.github.vad_ik.STP.service.demonstration.step;
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
-import com.github.vad_ik.STP.service.demonstration.VisualizationQueue;
+import com.github.vad_ik.STP.service.demonstration.step.queue.VisualizationQueueFindRoot;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 public class FindRootService {
 
     private final WindowConstantHolder consts;
-    private final VisualizationQueue queue;
+    private final VisualizationQueueFindRoot queue;
 
     @Autowired
-    public FindRootService(WindowConstantHolder windowConstantHolder, VisualizationQueue queue) {
+    public FindRootService(WindowConstantHolder windowConstantHolder, VisualizationQueueFindRoot queue) {
         this.consts = windowConstantHolder;
         this.queue = queue;
     }
@@ -57,10 +57,8 @@ public class FindRootService {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
             if (lastConnection != connectionRouter) {
                 if (node == connectionRouter.getModel1()) {
-                   // connectionRouter.getModel2().startSTP(node.getRootID(),connectionRouter);
                     queue.addNode(connectionRouter.getModel2(),node.getRootID(),connectionRouter);
                 } else {
-                  //  connectionRouter.getModel1().startSTP(node.getRootID(),connectionRouter);
                     queue.addNode(connectionRouter.getModel1(),node.getRootID(),connectionRouter);
                 }
             }

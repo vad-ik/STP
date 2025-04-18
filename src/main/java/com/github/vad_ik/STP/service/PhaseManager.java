@@ -1,6 +1,7 @@
 package com.github.vad_ik.STP.service;
 
-import com.github.vad_ik.STP.service.demonstration.VisualizationQueue;
+import com.github.vad_ik.STP.service.demonstration.step.queue.VisualizationQueueDistanceToRoot;
+import com.github.vad_ik.STP.service.demonstration.step.queue.VisualizationQueueFindRoot;
 import com.github.vad_ik.STP.service.mainStageService.ConnectionManager;
 import com.github.vad_ik.STP.service.mainStageService.FindNode;
 import com.github.vad_ik.STP.service.mainStageService.StartSTP;
@@ -23,14 +24,17 @@ public class PhaseManager {
     private Consumer<MouseEvent> onPhase1Action;
     private Consumer<MouseEvent> onPhase2Action;
     private boolean startStep = false;
-    private final VisualizationQueue queue;
+    private final VisualizationQueueFindRoot queueFindRoot;
+    private final VisualizationQueueDistanceToRoot queueDistanceToRoot;
+
 
     @Autowired
-    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager, VisualizationQueue queue) {
+    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager, VisualizationQueueFindRoot queueFindRoot, VisualizationQueueDistanceToRoot queueDistanceToRoot) {
         this.startSTP = startSTP;
         this.findNode = findNode;
         this.connectionManager = connectionManager;
-        this.queue = queue;
+        this.queueFindRoot = queueFindRoot;
+        this.queueDistanceToRoot = queueDistanceToRoot;
     }
 
     public void setOnPhaseActions(Consumer<MouseEvent> onPhase1Action,
@@ -49,11 +53,14 @@ public class PhaseManager {
                 phase++;
                 startSTP.setActive(true);
                 startSTP.startSTP(activeRegion);
+                startStep=false;
             }
             case 3 -> {
+                findNode.setActive(true);
                 findNode.distanceToRoot(activeRegion);
                 phase++;
                 text.setText("Поиск расстояния до корня");
+                startStep=false;
                 //todo сделать перезапуск
             }
             case 4 -> {
@@ -73,7 +80,7 @@ public class PhaseManager {
                 task2(text, activeRegion);
             }
             case 3 -> {
-
+task3(text, activeRegion);
             }
             case 4 -> {
 //                    phase = 2;
@@ -90,27 +97,46 @@ public class PhaseManager {
 
     public void task2(Text text, Pane activeRegion) {
 
-        System.out.println(queue.isEmpty());
-
         if (!startStep) {
             startStep=true;
             text.setText("Поиск корней");
             startSTP.setActive(false);
             startSTP.startSTP(activeRegion);
         }
-        if (queue.isEmpty()) {
-            phase++;
+        if (queueFindRoot.isEmpty()) {
             phase++;
             text.setText("Поиск расстояния до корня");
+            startStep=false;
             return;
         }
-        var nextNode = queue.getNext();
-        System.out.println(nextNode.getKey().getKey().getRouterID());
+        var nextNode = queueFindRoot.getNext();
         boolean ans = nextNode.getKey().getKey().startSTP(nextNode.getKey().getValue(), nextNode.getValue());
         if (!ans) {
             task2(text, activeRegion);
         }
     }
+    public void task3(Text text, Pane activeRegion) {
+
+        if (!startStep) {
+            startStep=true;
+            text.setText("Поиск расстояния до корня");
+            findNode.setActive(false);
+            findNode.distanceToRoot(activeRegion);
+        }
+        if (queueDistanceToRoot.isEmpty()) {
+            phase++;
+            startStep=false;
+            return;
+        }
+        var nextNode = queueDistanceToRoot.getNext();
+        nextNode.distanceToRoot();
+        boolean ans=true;
+        if (!ans) {
+            task3(text, activeRegion);
+        }
+    }
+
+
 
     public void handleMouseClick(MouseEvent event) {
         if (onPhase1Action == null || onPhase2Action == null) {

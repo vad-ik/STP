@@ -2,12 +2,18 @@ package com.github.vad_ik.STP.service.demonstration.step;
 
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
+import com.github.vad_ik.STP.service.demonstration.step.queue.VisualizationQueueDistanceToRoot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class DistanceToRoot {
+   private final VisualizationQueueDistanceToRoot queueDistanceToRoot;
+
+    public DistanceToRoot(VisualizationQueueDistanceToRoot queueDistanceToRoot) {
+        this.queueDistanceToRoot = queueDistanceToRoot;
+    }
 
     public void getDistanceToRoot(SwitchModel node) {
         for (ConnectionRouter connectionRouter : node.getConnection()) {
@@ -32,7 +38,8 @@ public class DistanceToRoot {
                         node2.getConnection().get(i).offLine();
                     }
                 }
-                node2.distanceToRoot();
+                queueDistanceToRoot.addNode(node2);
+//                node2.distanceToRoot();
             }
         }
     }

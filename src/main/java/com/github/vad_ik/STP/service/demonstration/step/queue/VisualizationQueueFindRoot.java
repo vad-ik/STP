@@ -1,4 +1,4 @@
-package com.github.vad_ik.STP.service.demonstration;
+package com.github.vad_ik.STP.service.demonstration.step.queue;
 
 import com.github.vad_ik.STP.graphics.myNode.ConnectionRouter;
 import com.github.vad_ik.STP.graphics.myNode.SwitchModel;
@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Service
-public class VisualizationQueue {
+public class VisualizationQueueFindRoot {
     ArrayDeque<Pair<Pair<SwitchModel,Integer>, ConnectionRouter>> queue = new ArrayDeque<>();
-    private final List<Consumer<VisualizationQueue>> listeners = new ArrayList<>();
+    private final List<Consumer<VisualizationQueueFindRoot>> listeners = new ArrayList<>();
 
-    public void addListener(Consumer<VisualizationQueue> listener) {
+    public void addListener(Consumer<VisualizationQueueFindRoot> listener) {
         listeners.add(listener);
     }
 
