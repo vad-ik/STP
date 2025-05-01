@@ -18,12 +18,17 @@ public class FxUtils {
     }
 
     public static Line getLine(SwitchView connectedNode1, SwitchView connectedNode2, int width, Color color) {
+
+        return getLine(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY(),  width,  color);
+    }
+    public static Line getLine(double x1,double y1,double x2,double y2, int width, Color color) {
         Line line;
-        line = new Line(connectedNode1.getX(), connectedNode1.getY(), connectedNode2.getX(), connectedNode2.getY());
+        line = new Line(x1, y1, x2, y2);
         line.setStrokeWidth(width);
         line.setStroke(color);
         return line;
     }
+
 
     public static void setDotted(Line line) {
         // Настройка пунктира (длина штриха и пробела)

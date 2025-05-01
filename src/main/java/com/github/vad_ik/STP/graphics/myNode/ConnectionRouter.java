@@ -3,6 +3,7 @@ package com.github.vad_ik.STP.graphics.myNode;
 import com.github.vad_ik.STP.config.constants.WindowConstantHolder;
 import com.github.vad_ik.STP.utils.FxUtils;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class ConnectionRouter extends Pane {
     private boolean active = true;
     private final WindowConstantHolder constant;
     private Line meinLine;
+    private boolean dis=false;
 
     public ConnectionRouter(WindowConstantHolder constant) {
         this.constant = constant;

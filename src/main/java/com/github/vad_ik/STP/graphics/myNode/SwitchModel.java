@@ -25,6 +25,12 @@ public class SwitchModel {
     @Setter
     private boolean disable=false;
 
+    public void reset(){
+        connectionToRoot.replaceAll(ignored -> false);
+        nodeType = false;
+        demonstration.reset();
+        distanceToRoot=null;
+    }
     public SwitchModel(SPTProtocolDemonstrationService demonstration) {
         this.demonstration = demonstration;
     }
@@ -37,7 +43,7 @@ public class SwitchModel {
     }
 
     public boolean startSTP(int rootID, ConnectionRouter lastConnection) {
-        if (demonstration.getRootID() > rootID) {
+        if (getRootID() > rootID) {
             demonstration.startSTP(this,  lastConnection);
             return true;
         }else return false;
@@ -70,5 +76,14 @@ public class SwitchModel {
     public void addConnection(ConnectionRouter connectionRouter) {
         connection.add(connectionRouter);
         connectionToRoot.add(false);
+    }
+    public  ArrayList<ConnectionRouter> getActiveConnection(){
+        ArrayList<ConnectionRouter> connect=new ArrayList<>();
+        for (ConnectionRouter connectionRouter : connection) {
+            if (!connectionRouter.isDis()) {
+                connect.add(connectionRouter);
+            }
+        }
+        return connect;
     }
 }

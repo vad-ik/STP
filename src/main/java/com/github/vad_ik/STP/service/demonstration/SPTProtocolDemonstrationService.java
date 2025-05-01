@@ -25,6 +25,13 @@ public class SPTProtocolDemonstrationService {
     FindRootService findRootService;
     DistanceToRoot distanceToRoot;
 
+    public void reset() {
+        root = false;
+        signalReceived = false;
+        rootID = consts.MAX_INT;
+        lenPathToRoot = consts.MAX_INT;
+    }
+
     public SPTProtocolDemonstrationService(WindowConstantHolder consts, FindRootService findRootService, DistanceToRoot distanceToRoot) {
         this.consts = consts;
         this.findRootService = findRootService;
@@ -34,7 +41,7 @@ public class SPTProtocolDemonstrationService {
     }
 
     public void startSTP(SwitchModel node, ConnectionRouter lastConnection) {
-        findRootService.startSTP(node,  lastConnection);
+        findRootService.startSTP(node, lastConnection);
     }
 
     public void distanceToRoot(SwitchModel switchModel) {

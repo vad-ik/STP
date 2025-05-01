@@ -11,11 +11,10 @@ import java.util.ArrayList;
 public class NodeTableUI extends ScrollPane {
     VBox pane = new VBox(10);
     ArrayList<Label> nodeArray = new ArrayList<>();
-
+    Label cap = new Label("\nid\tкорень\t\tрасстояние до корня");
     public NodeTableUI() {
         setPrefViewportHeight(100);
         setPrefViewportWidth(250);
-        Label cap = new Label("\nid\tкорень\t\tрасстояние до корня");
         pane.getChildren().add(cap);
         setContent(pane);
     }
@@ -24,6 +23,11 @@ public class NodeTableUI extends ScrollPane {
         var textField = new Label("" + routerID);
         nodeArray.add(textField);
         pane.getChildren().add(textField);
+    }
+    public void clear(){
+        nodeArray=new ArrayList<>();
+        pane.getChildren().clear();
+        pane.getChildren().add(cap);
     }
 
     public void setRoot(int id, String isRoot) {

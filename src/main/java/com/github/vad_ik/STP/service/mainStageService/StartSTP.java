@@ -22,8 +22,10 @@ public class StartSTP {
         this.queue = queue;
         queue.addListener(updatedModel ->
         {
+
             if (active) {
                 while (!queue.isEmpty()) {
+
                     var nextNode = queue.getNext();
                     nextNode.getKey().getKey().startSTP(nextNode.getKey().getValue(), nextNode.getValue());
                 }
@@ -38,6 +40,7 @@ public class StartSTP {
             if ((activeRegion.getChildren().get(i)) instanceof SwitchView) {
                 //((SwitchView) activeRegion.getChildren().get(i)).getSwitchModel().startSTP(constants.MAX_INT - 1, null);
                 queue.addNode(((SwitchView) activeRegion.getChildren().get(i)).getSwitchModel(), constants.MAX_INT - 1, null);
+
             }
         }
     }

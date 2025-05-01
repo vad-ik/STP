@@ -12,6 +12,9 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Getter
@@ -27,15 +30,16 @@ public class PhaseManager {
     private boolean startStep = false;
     private final VisualizationQueueFindRoot queueFindRoot;
     private final VisualizationQueueDistanceToRoot queueDistanceToRoot;
-
+    private final ClearService clearService;
 
     @Autowired
-    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager, VisualizationQueueFindRoot queueFindRoot, VisualizationQueueDistanceToRoot queueDistanceToRoot) {
+    public PhaseManager(StartSTP startSTP, FindNode findNode, ConnectionManager connectionManager, VisualizationQueueFindRoot queueFindRoot, VisualizationQueueDistanceToRoot queueDistanceToRoot, ClearService clearService) {
         this.startSTP = startSTP;
         this.findNode = findNode;
         this.connectionManager = connectionManager;
         this.queueFindRoot = queueFindRoot;
         this.queueDistanceToRoot = queueDistanceToRoot;
+        this.clearService = clearService;
     }
 
     public void setOnPhaseActions(Consumer<MouseEvent> onPhase1Action,
@@ -52,23 +56,29 @@ public class PhaseManager {
                 task1(text);
             }
             case 2 -> {
-                text.setText("Поиск корней");
-                phase++;
-                startSTP.setActive(true);
-                startSTP.startSTP(activeRegion);
-                startStep=false;
+                task2Full(text,activeRegion);
             }
             case 3 -> {
                 findNode.setActive(true);
                 findNode.distanceToRoot(activeRegion);
-                phase++;
+
                 text.setText("Поиск расстояния до корня");
-                startStep=false;
-                //todo сделать перезапуск
+                startStep = false;
+
+                ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+                // Запустить через 5 секунд
+                executor.schedule(() -> {
+                    phase++;
+                    text.setText("Теперь вы можете выключить узлы и коммутаторы");
+                }, 3, TimeUnit.SECONDS);
+                // Закрыть executor после выполнения
+                executor.shutdown();
             }
             case 4 -> {
-//                    phase = 2;
-//                    text.setText("Добавьте связи между коммутаторами");
+                phase = 2;
+                clearService.clear(activeRegion);
+                //todo сделать перезапуск
+                task2Full(text,activeRegion);
             }
             default -> throw new IllegalStateException("Unknown phase" + phase);
         }
@@ -83,16 +93,24 @@ public class PhaseManager {
                 task2(text, activeRegion);
             }
             case 3 -> {
-task3(text, activeRegion);
+                task3(text, activeRegion);
             }
             case 4 -> {
-//                    phase = 2;
-//                    text.setText("Добавьте связи между коммутаторами");
+                clearService.clear(activeRegion);
+                phase=2;
+                task2(text, activeRegion);
             }
             default -> throw new IllegalStateException("Unknown phase" + phase);
         }
     }
 
+    public void task2Full(Text text,Pane activeRegion){
+        text.setText("Поиск корней");
+        phase++;
+        startSTP.setActive(true);
+        startSTP.startSTP(activeRegion);
+        startStep = false;
+    }
     public void task1(Text text) {
         text.setText("Добавьте связи между коммутаторами");
         phase++;
@@ -101,7 +119,7 @@ task3(text, activeRegion);
     public void task2(Text text, Pane activeRegion) {
 
         if (!startStep) {
-            startStep=true;
+            startStep = true;
             text.setText("Поиск корней");
             startSTP.setActive(false);
             startSTP.startSTP(activeRegion);
@@ -109,7 +127,7 @@ task3(text, activeRegion);
         if (queueFindRoot.isEmpty()) {
             phase++;
             text.setText("Поиск расстояния до корня");
-            startStep=false;
+            startStep = false;
             return;
         }
         var nextNode = queueFindRoot.getNext();
@@ -118,27 +136,28 @@ task3(text, activeRegion);
             task2(text, activeRegion);
         }
     }
+
     public void task3(Text text, Pane activeRegion) {
 
         if (!startStep) {
-            startStep=true;
+            startStep = true;
             text.setText("Поиск расстояния до корня");
             findNode.setActive(false);
             findNode.distanceToRoot(activeRegion);
         }
         if (queueDistanceToRoot.isEmpty()) {
             phase++;
-            startStep=false;
+            text.setText("Теперь вы можете выключить узлы и коммутаторы");
+            startStep = false;
             return;
         }
         var nextNode = queueDistanceToRoot.getNext();
         nextNode.distanceToRoot();
-        boolean ans=true;
+        boolean ans = true;
         if (!ans) {
             task3(text, activeRegion);
         }
     }
-
 
 
     public void handleMouseClick(MouseEvent event) {
@@ -150,7 +169,7 @@ task3(text, activeRegion);
             case 2 -> onPhase2Action.accept(event);
             case 3 -> {
             }
-            case 4 ->{
+            case 4 -> {
                 onPhase3Action.accept(event);
             }
             default -> throw new IllegalStateException("Unknown phase" + phase);
